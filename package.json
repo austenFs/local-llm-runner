@@ -1,0 +1,37 @@
+
+{
+  "name": "ollama-qwen-docker",
+  "version": "1.0.0",
+  "description": "Node.js TypeScript project with Ollama Qwen2.5 Coder in Docker",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:logs:app": "docker compose logs -f app",
+    "docker:logs:ollama": "docker compose logs -f ollama",
+    "docker:logs:frontend": "docker compose logs -f frontend",
+    "docker:logs:rag": "docker compose logs -f rag",
+    "docker:restart": "npm run docker:down && npm run docker:up",
+    "docker:status": "docker compose ps",
+    "setup": "npm install && npm run docker:build && docker compose exec ollama ollama pull qwen2.5-coder && docker compose up -d",
+    "teardown": "npm run docker:down && docker volume rm ollama-qwen-docker_ollama-data || true",
+    "ping": "docker compose up app",
+    "ping:local": "npm run build && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
+  }
+}

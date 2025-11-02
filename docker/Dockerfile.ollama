@@ -1,0 +1,11 @@
+
+FROM ollama/ollama:latest
+
+# Expose Ollama API port
+EXPOSE 11434
+
+# Create volume mount point
+VOLUME ["/root/.ollama"]
+
+# Start Ollama server
+CMD ["serve"]

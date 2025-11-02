@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  ollama:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ollama
+    container_name: ollama-qwen
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    restart: unless-stopped
+    networks:
+      - ollama-network
+
+  rag:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.rag
+    container_name: ollama-rag
+    ports:
+      - "8000:8000"
+    volumes:
+      - rag-data:/app/chroma_db
+      - ./data:/app/data:ro
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - DATA_DIR=/app/data
+    networks:
+      - ollama-network
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.app
+    container_name: ollama-app
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - MODEL=qwen2.5-coder
+    networks:
+      - ollama-network
+
+volumes:
+  ollama-data:
+  rag-data:
+
+networks:
+  ollama-network:
+    driver: bridge
