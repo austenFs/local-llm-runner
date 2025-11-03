@@ -37,7 +37,7 @@ async function pingQwen(): Promise<void> {
     // Send a simple ping/hello message
     const response = await axios.post(`${OLLAMA_URL}/api/generate`, {
       model: MODEL,
-      prompt: 'how do I adjust you hyper parameters like temperature?',
+      prompt: 'ping test',
       stream: false
     });
     
