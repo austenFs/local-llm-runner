@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import { MessageHandler } from './services/messages/message-handler';
 import { container } from './services/ioc/IoC-Container';
 import { InjectionRegistry } from './services/ioc/injection-registry';
-import { ApiHandler } from './services/API/api-handler';
+import { ApiHandler } from './services/external/api-handler';
 // Load environment variables
 dotenv.config();
 
@@ -21,7 +21,9 @@ app.use(cors());
 app.use(express.json());
 
 // Health check endpoint (for Docker health check)
-app.get('/health', (req, res) => {
+app.get('/health', async (req, res) => {
+  console.log(await apiHandler.healthCheck());
+  console.log('hi')
   res.status(200).json({ 
     status: 'healthy', 
     timestamp: new Date().toISOString(),
@@ -49,6 +51,12 @@ app.get('/ping', async (req, res) => {
   });
 });
 
+app.post('/sendMessage',  async (req, res) => {
+  const value = await apiHandler.ping()
+  res.json({ 
+    message: value,
+  });
+});
 
 // Basic error handling
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

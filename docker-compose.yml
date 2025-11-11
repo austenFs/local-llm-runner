@@ -26,7 +26,7 @@ services:
 
   api:
     build:
-      context: ./rag
+      context: ./api
       dockerfile: ../docker/Dockerfile.api
     container_name: ollama-api
     ports:

@@ -13,4 +13,7 @@ export class ApiHandler {
         console.log('ping');
         return await this.messageHandler.pingQwen()
     }
+    public async healthCheck() {
+        return await this.messageHandler.healthCheck()
+    }
 }
